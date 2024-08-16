@@ -25,9 +25,9 @@ const productSchema = new mongoose.Schema(
       type: Date,
       default: Date.now,
     },
-    vendedor: {
+    user: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Vendedor',
+      ref: 'Usuario',
       required: true,
     },
   },

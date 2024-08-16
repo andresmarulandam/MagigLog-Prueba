@@ -21,7 +21,7 @@ export const productSchema = z.object({
     .min(0, {
       message: 'Price cannot be less than 0',
     }),
-  vendedor: z.string({
-    required_error: 'Vendedor ID is required',
+  userId: z.string({
+    required_error: 'user ID is required',
   }),
 });

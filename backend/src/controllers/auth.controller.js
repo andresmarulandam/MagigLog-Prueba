@@ -1,15 +1,17 @@
-import Vendedor from '../models/vendedor.model.js';
+import Usuario from '../models/usuario.model.js';
 import bcrypt from 'bcryptjs';
 import { createAccessToken } from '../libs/jwt.js';
 
 export const register = async (req, res) => {
-  const { username, email, password, confirmPassword } = req.body;
+  const { username, email, password, confirmPassword, role } = req.body;
 
   try {
-    const vendedorYaExiste = await Vendedor.findOne({ email });
+    const userExist = await Usuario.findOne({ email });
 
-    if (vendedorYaExiste) {
-      return res.status(400).json({ message: 'User already exists' });
+    if (userExist) {
+      return res
+        .status(400)
+        .json({ message: 'Este usuario ya existe, prueba con otro' });
     }
 
     if (password !== confirmPassword) {
@@ -18,14 +20,15 @@ export const register = async (req, res) => {
 
     const passwordHash = await bcrypt.hash(password, 10);
 
-    const newVendedor = new Vendedor({
+    const newUser = new Usuario({
       username,
       email,
       password: passwordHash,
+      role: role || 'comprador',
     });
 
-    const vendedorSaved = await newVendedor.save();
-    const token = await createAccessToken({ id: vendedorSaved._id });
+    const userSaved = await newUser.save();
+    const token = await createAccessToken({ id: userSaved._id });
 
     res.cookie('token', token, {
       httpOnly: true,
@@ -33,11 +36,11 @@ export const register = async (req, res) => {
     });
 
     res.json({
-      id: vendedorSaved._id,
-      email: vendedorSaved.email,
-      password: vendedorSaved.password,
-      createdAt: vendedorSaved.createdAt,
-      updatedAt: vendedorSaved.updatedAt,
+      id: userSaved._id,
+      email: userSaved.email,
+      role: userSaved.role,
+      createdAt: userSaved.createdAt,
+      updatedAt: userSaved.updatedAt,
     });
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -48,17 +51,20 @@ export const login = async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    const vendedorEncontrado = await Vendedor.findOne({ email });
+    const userFound = await Usuario.findOne({ email });
 
-    if (!vendedorEncontrado)
-      return res.status(400).json({ message: 'Vendedor not found' });
+    if (!userFound)
+      return res.status(400).json({ message: 'Usuario no encontrado' });
 
-    const isMatch = await bcrypt.compare(password, vendedorEncontrado.password);
+    const isMatch = await bcrypt.compare(password, userFound.password);
 
     if (!isMatch)
-      return res.status(400).json({ message: 'Invalid credentials' });
+      return res.status(400).json({ message: 'Contraseña invalida' });
 
-    const token = await createAccessToken({ id: vendedorEncontrado._id });
+    const token = await createAccessToken({
+      id: userFound._id,
+      role: userFound.role,
+    });
 
     res.cookie('token', token, {
       httpOnly: true,
@@ -66,11 +72,11 @@ export const login = async (req, res) => {
     });
 
     res.json({
-      id: vendedorEncontrado._id,
-      email: vendedorEncontrado.email,
-      password: vendedorEncontrado.password,
-      createdAt: vendedorEncontrado.createdAt,
-      updatedAt: vendedorEncontrado.updatedAt,
+      id: userFound._id,
+      email: userFound.email,
+      role: userFound.role,
+      createdAt: userFound.createdAt,
+      updatedAt: userFound.updatedAt,
     });
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -85,16 +91,16 @@ export const logout = async (req, res) => {
 };
 
 export const profile = async (req, res) => {
-  const vendedorEncontrado = await Vendedor.findById(req.user.id);
+  const userFound = await Usuario.findById(req.user.id);
 
-  if (!vendedorEncontrado)
-    return res.status(400).json({ message: 'Vendedor no encontrado' });
+  if (!userFound)
+    return res.status(400).json({ message: 'Usuario no encontrado' });
 
   res.json({
-    id: vendedorEncontrado._id,
-    email: vendedorEncontrado.email,
-    password: vendedorEncontrado.password,
-    createdAt: vendedorEncontrado.createdAt,
-    updatedAt: vendedorEncontrado.updatedAt,
+    id: userFound._id,
+    email: userFound.email,
+    role: userFound.role,
+    createdAt: userFound.createdAt,
+    updatedAt: userFound.updatedAt,
   });
 };

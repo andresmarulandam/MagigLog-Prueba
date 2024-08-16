@@ -24,6 +24,9 @@ export const registerSchema = z
     confirmPassword: z
       .string({ required_error: 'La confirmacion de contraseña es requerida' })
       .min(6, 'Confirm Password must be at least 6 characters long'),
+    role: z.enum(['vendedor', 'comprador', 'administrador'], {
+      required_error: 'El rol es requerido',
+    }),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: 'Las contraseñas no coinciden',

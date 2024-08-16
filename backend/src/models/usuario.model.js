@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-const vendedorSchema = new mongoose.Schema(
+const usuarioSchema = new mongoose.Schema(
   {
     username: {
       type: String,
@@ -17,10 +17,15 @@ const vendedorSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    role: {
+      type: String,
+      enum: ['comprador', 'vendedor', 'administrador'],
+      default: 'comprador',
+    },
   },
   {
     timestamps: true,
   },
 );
 
-export default mongoose.model('Vendedor', vendedorSchema);
+export default mongoose.model('Usuario', usuarioSchema);
