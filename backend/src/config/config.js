@@ -1,0 +1,16 @@
+import * as dotenv from 'dotenv';
+
+dotenv.config();
+
+export const configuration = {
+  server: {
+    port: process.env.PORT || 4000,
+  },
+  database: {
+    MONGO_USER: process.env.MONGO_USER,
+    MONGO_PASSWORD: process.env.MONGO_PASSWORD,
+  },
+  frontend: {
+    FRONTEND_URL: process.env.FRONTEND_URL || 'http://localhost:5173/',
+  },
+};
