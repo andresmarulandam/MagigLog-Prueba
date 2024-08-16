@@ -13,4 +13,10 @@ export const configuration = {
   frontend: {
     FRONTEND_URL: process.env.FRONTEND_URL || 'http://localhost:5173/',
   },
+  backend: {
+    BACKEND_URL: process.env.BACKEND_URL,
+  },
+  tokenSecret: {
+    tokenSecret: process.env.TOKEN_SECRET,
+  },
 };
