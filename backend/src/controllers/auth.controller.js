@@ -73,3 +73,18 @@ export const logout = async (req, res) => {
   });
   return res.sendStatus(200);
 };
+
+export const profile = async (req, res) => {
+  const vendedorEncontrado = await Vendedor.findById(req.decoded.id);
+
+  if (!vendedorEncontrado)
+    return res.status(400).json({ message: 'Vendedor no encontrado' });
+
+  res.json({
+    id: vendedorEncontrado._id,
+    email: vendedorEncontrado.email,
+    password: vendedorEncontrado.password,
+    createdAt: vendedorEncontrado.createdAt,
+    updatedAt: vendedorEncontrado.updatedAt,
+  });
+};
