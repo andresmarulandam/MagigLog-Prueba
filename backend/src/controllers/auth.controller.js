@@ -75,7 +75,7 @@ export const logout = async (req, res) => {
 };
 
 export const profile = async (req, res) => {
-  const vendedorEncontrado = await Vendedor.findById(req.decoded.id);
+  const vendedorEncontrado = await Vendedor.findById(req.user.id);
 
   if (!vendedorEncontrado)
     return res.status(400).json({ message: 'Vendedor no encontrado' });
