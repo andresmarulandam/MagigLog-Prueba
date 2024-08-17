@@ -3,7 +3,7 @@ import RegisterModal from '../components/RegisterModal';
 
 function Home() {
   return (
-    <div>
+    <div className="flex justify-center items-center min-h-screen ">
       <RegisterModal />
     </div>
   );
