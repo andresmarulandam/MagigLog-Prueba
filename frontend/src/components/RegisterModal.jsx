@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { registerRequest } from '../api/auth';
 import LoginModal from './LoginModal';
+import { useAuth } from '../context/AuthContext';
 
 const RegisterModal = () => {
   const {
@@ -11,6 +11,10 @@ const RegisterModal = () => {
     trigger,
     formState: { errors },
   } = useForm();
+
+  const { signup, user } = useAuth();
+
+  console.log('User in context:', user);
 
   const [isTouched, setIsTouched] = useState(false);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
@@ -23,16 +27,14 @@ const RegisterModal = () => {
     }
   }, [password, confirmPassword, isTouched, trigger]);
 
+  const onSubmit = handleSubmit(async (values) => {
+    await signup(values);
+  });
+
   return (
-    <div className="bg-zinc-700 max-w-md p-10 rounded-md">
+    <div className="bg-zinc-700 w-1/3 p-10 rounded-md">
       <h1 className="flex justify-center mb-10">CREAR CUENTA</h1>
-      <form
-        onSubmit={handleSubmit(async (values) => {
-          console.log(values);
-          const res = await registerRequest(values);
-          console.log(res);
-        })}
-      >
+      <form onSubmit={onSubmit}>
         <div>
           <label className="block mb-2 text-white">Username</label>
           <input
