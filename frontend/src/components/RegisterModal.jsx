@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import LoginModal from './LoginModal';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 
@@ -17,7 +16,6 @@ const RegisterModal = () => {
   const navigate = useNavigate();
 
   const [isTouched, setIsTouched] = useState(false);
-  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const password = watch('password');
   const confirmPassword = watch('confirmPassword');
 
@@ -34,6 +32,10 @@ const RegisterModal = () => {
   const onSubmit = handleSubmit(async (values) => {
     await signup(values);
   });
+  const handleLoginClick = () => {
+    setIsLoginModalOpen(true);
+    onClose();
+  };
 
   return (
     <div className="bg-zinc-700 w-1/3 p-10 rounded-md">
@@ -97,6 +99,20 @@ const RegisterModal = () => {
           )}
         </div>
 
+        <div>
+          <label className="block mb-2 text-white">Rol</label>
+          <select
+            {...register('role', { required: 'Role is required' })}
+            className="w-full bg-zinc-600 text-white px-4 py-2 rounded-md mb-6"
+          >
+            <option value="">Selecciona un rol</option>
+            <option value="comprador">Comprador</option>
+            <option value="vendedor">Vendedor</option>
+            <option value="administrador">Administrador</option>
+          </select>
+          {errors.role && <p className="text-red-500">{errors.role.message}</p>}
+        </div>
+
         <div className="flex justify-center">
           <button
             type="submit"
@@ -108,17 +124,8 @@ const RegisterModal = () => {
       </form>
 
       <div className="mt-4 text-center">
-        <button
-          onClick={() => setIsLoginModalOpen(true)}
-          className="text-blue-400 hover:underline"
-        >
-          Inicia sesión
-        </button>
+        <p className="text-blue-400 hover:underline">Inicia sesión</p>
       </div>
-
-      {isLoginModalOpen && (
-        <LoginModal onClose={() => setIsLoginModalOpen(false)} />
-      )}
     </div>
   );
 };
