@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import LoginModal from './LoginModal';
 import { useAuth } from '../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 const RegisterModal = () => {
   const {
@@ -12,9 +13,8 @@ const RegisterModal = () => {
     formState: { errors },
   } = useForm();
 
-  const { signup, user } = useAuth();
-
-  console.log('User in context:', user);
+  const { signup, isAuthenticated, errors: registerErrors } = useAuth();
+  const navigate = useNavigate();
 
   const [isTouched, setIsTouched] = useState(false);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
@@ -27,6 +27,10 @@ const RegisterModal = () => {
     }
   }, [password, confirmPassword, isTouched, trigger]);
 
+  useEffect(() => {
+    if (isAuthenticated) navigate('/products');
+  }, [isAuthenticated]);
+
   const onSubmit = handleSubmit(async (values) => {
     await signup(values);
   });
@@ -34,6 +38,12 @@ const RegisterModal = () => {
   return (
     <div className="bg-zinc-700 w-1/3 p-10 rounded-md">
       <h1 className="flex justify-center mb-10">CREAR CUENTA</h1>
+      {registerErrors.map((error, i) => (
+        <div className="bg-red-500 p-2" key={i}>
+          {error}
+        </div>
+      ))}
+
       <form onSubmit={onSubmit}>
         <div>
           <label className="block mb-2 text-white">Username</label>
