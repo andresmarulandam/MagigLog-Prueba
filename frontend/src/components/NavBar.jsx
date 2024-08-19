@@ -1,15 +1,13 @@
 import { Link } from 'react-router-dom';
-import { useAuth } from '../context/authContext';
+import { useAuth } from '../context/AuthContext';
 
 export function Navbar() {
-  const { isAuthenticated, logout, user } = useAuth();
+  const { isAuthenticated, user } = useAuth();
   console.log(isAuthenticated, user);
 
   return (
     <nav className="bg-zinc-700 my-3 flex justify-between py-5 px-10 rounded-lg">
-      <h1 className="text-2xl font-bold">
-        <h1>MagicLog</h1>
-      </h1>
+      <h1 className="text-2xl font-bold">MagicLog</h1>
       <ul className="flex gap-x-2">
         {isAuthenticated ? (
           <>
