@@ -1,17 +1,25 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import Home from './pages/Home';
 import { AuthProvider } from './context/AuthContext';
-import Products from './pages/Products';
+import { ProductProvider } from './context/ProductsContext';
+
+import ProductsPage from './pages/ProductsPage';
+import Home from './pages/Home';
+import ProtectedRoutes from './pages/ProtectedRoutes';
 
 const App = () => {
   return (
     <AuthProvider>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/products" element={<Products />} />
-        </Routes>
-      </BrowserRouter>
+      <ProductProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Home />} />
+
+            <Route element={<ProtectedRoutes />}>
+              <Route path="/products" element={<ProductsPage />} />
+            </Route>
+          </Routes>
+        </BrowserRouter>
+      </ProductProvider>
     </AuthProvider>
   );
 };

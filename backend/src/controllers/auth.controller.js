@@ -1,6 +1,10 @@
 import Usuario from '../models/usuario.model.js';
 import bcrypt from 'bcryptjs';
 import { createAccessToken } from '../libs/jwt.js';
+import jwt from 'jsonwebtoken';
+import { configuration } from '../config/config.js';
+
+const { tokenSecret } = configuration.tokenSecret;
 
 export const register = async (req, res) => {
   const { username, email, password, confirmPassword, role } = req.body;
@@ -100,5 +104,23 @@ export const profile = async (req, res) => {
     role: userFound.role,
     createdAt: userFound.createdAt,
     updatedAt: userFound.updatedAt,
+  });
+};
+
+export const verifyToken = async (req, res) => {
+  const { token } = req.cookies;
+  if (!token) return res.send(false);
+
+  jwt.verify(token, tokenSecret, async (error, user) => {
+    if (error) return res.sendStatus(401);
+
+    const userFound = await Usuario.findById(user.id);
+    if (!userFound) return res.sendStatus(401);
+
+    return res.json({
+      id: userFound._id,
+      username: userFound.username,
+      email: userFound.email,
+    });
   });
 };
